@@ -1,0 +1,4 @@
+environment = "homolog"
+
+# Use TF_VAR_database_password locally or a protected GitHub secret.
+database_password = "replace-with-a-secure-password"
