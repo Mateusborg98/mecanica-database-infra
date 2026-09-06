@@ -35,6 +35,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Validate deployment configuration
+        shell: bash
+        run: |
+          missing=()
+          for name in TF_STATE_BUCKET TF_VAR_database_password; do
+            if [ -z "${!name}" ]; then
+              missing+=("$name")
+            fi
+          done
+          if [ "${#missing[@]}" -gt 0 ]; then
+            printf 'Configuração obrigatória ausente: %s\n' "${missing[*]}"
+            exit 1
+          fi
+
       - name: Configure Terraform
         uses: hashicorp/setup-terraform@v3
         with:
