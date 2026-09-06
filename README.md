@@ -148,6 +148,13 @@ Após o deploy, o Terraform fornece:
 
 Os outputs não incluem a senha.
 
+## Evidência validada em homologação
+
+Na validação de 6 de setembro de 2026, a instância
+`mecanica-homolog-postgresql` estava disponível, privada e acessível pela
+Lambda e pela aplicação no EKS. As migrations Flyway foram aplicadas pela
+aplicação e o fluxo completo de uma ordem foi persistido até `ENTREGUE`.
+
 ## CI/CD
 
 O workflow de CI executa em pushes de features e pull requests destinados a
@@ -189,3 +196,7 @@ documentação Swagger pertence ao repositório da aplicação principal.
 - a classe e o armazenamento foram reduzidos para o orçamento acadêmico;
 - o RDS gera cobrança enquanto estiver provisionado;
 - destrua o ambiente quando não estiver sendo utilizado para demonstração.
+
+Para uma pausa curta, o RDS pode ser parado com `aws rds stop-db-instance`.
+Para encerrar definitivamente a cobrança do ambiente, use o `terraform destroy`
+com o mesmo backend e state empregados na criação.
