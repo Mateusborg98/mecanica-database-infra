@@ -128,9 +128,12 @@ Para remover os recursos e interromper a cobrança:
 terraform -chdir=infra destroy -var="environment=homolog"
 ```
 
-O deploy automatizado de `homolog` e `main` será executado pelo GitHub Actions
-depois da configuração do backend remoto e dos secrets temporários do Learner
-Lab.
+O deploy automatizado é executado pelo GitHub Actions:
+
+- push em `homolog`: aplica o ambiente `homolog`;
+- push em `main`: aplica o ambiente `production` com a variável `prod`.
+
+Cada branch utiliza uma chave de state diferente no mesmo bucket S3.
 
 ## Outputs
 
@@ -145,14 +148,39 @@ Após o deploy, o Terraform fornece:
 
 Os outputs não incluem a senha.
 
+## Evidência validada em homologação
+
+Na validação de 6 de setembro de 2026, a instância
+`mecanica-homolog-postgresql` estava disponível, privada e acessível pela
+Lambda e pela aplicação no EKS. As migrations Flyway foram aplicadas pela
+aplicação e o fluxo completo de uma ordem foi persistido até `ENTREGUE`.
+
 ## CI/CD
 
-O workflow atual executa em pushes de features e pull requests destinados a
+O workflow de CI executa em pushes de features e pull requests destinados a
 `homolog` ou `main`:
 
 1. inicialização do Terraform sem backend;
 2. verificação de formatação;
 3. validação da configuração.
+
+O workflow de CD executa após mudanças em `homolog` e `main`:
+
+1. configura as credenciais temporárias da AWS;
+2. inicializa o backend remoto no S3;
+3. gera um plano Terraform;
+4. aplica automaticamente o plano aprovado pelo fluxo de Pull Request.
+
+Os ambientes `homolog` e `production` devem possuir estes secrets:
+
+- `AWS_ACCESS_KEY_ID`;
+- `AWS_SECRET_ACCESS_KEY`;
+- `AWS_SESSION_TOKEN`;
+- `TF_STATE_BUCKET`;
+- `DATABASE_PASSWORD`.
+
+As três credenciais AWS devem ser atualizadas sempre que a sessão temporária
+do Learner Lab expirar.
 
 A branch `main` é protegida e alterações devem ser promovidas por Pull Request.
 
@@ -168,3 +196,7 @@ documentação Swagger pertence ao repositório da aplicação principal.
 - a classe e o armazenamento foram reduzidos para o orçamento acadêmico;
 - o RDS gera cobrança enquanto estiver provisionado;
 - destrua o ambiente quando não estiver sendo utilizado para demonstração.
+
+Para uma pausa curta, o RDS pode ser parado com `aws rds stop-db-instance`.
+Para encerrar definitivamente a cobrança do ambiente, use o `terraform destroy`
+com o mesmo backend e state empregados na criação.
