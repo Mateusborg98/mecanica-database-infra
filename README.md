@@ -186,8 +186,11 @@ A branch `main` é protegida e alterações devem ser promovidas por Pull Reques
 
 ## Swagger/Postman
 
-Não se aplica a este repositório, pois ele não expõe endpoints HTTP. A
-documentação Swagger pertence ao repositório da aplicação principal.
+Este repositório não expõe endpoints HTTP, mas integra a mesma solução:
+
+- [Swagger da aplicação pelo API Gateway](https://3o3iqeu0b9.execute-api.us-east-1.amazonaws.com/swagger-ui/index.html)
+- [Coleção Postman da solução](https://github.com/Mateusborg98/mecanica-api/blob/main/docs/postman/mecanica-fase3.postman_collection.json)
+- [Modelo ER, cardinalidades e justificativa do PostgreSQL](https://github.com/Mateusborg98/mecanica-api/blob/main/docs/relational-model.md)
 
 ## Segurança e custos
 
